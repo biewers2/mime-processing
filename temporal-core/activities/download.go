@@ -19,7 +19,7 @@ type DownloadOutput struct {
 
 // Temporal Activity to download a file from S3 into a destination.
 // Returns number of bytes downloaded.
-func Download(ctx context.Context, input DownloadInput) (DownloadOutput, error) {
+func Download(_ context.Context, input DownloadInput) (DownloadOutput, error) {
 	bucket, key, err := core.ParseS3Uri(input.S3Uri)
 	if err != nil {
 		return DownloadOutput{}, err

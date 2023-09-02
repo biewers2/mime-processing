@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"log"
 	"net/url"
+	"os"
 )
 
 type Unit = struct{}
@@ -35,5 +36,12 @@ func ParseS3Uri(s3uri string) (bucket string, key string, err error) {
 	if err != nil {
 		return "", "", err
 	}
-	return u.Host, u.Path, nil
+	path := u.Path[1:]
+	return u.Host, path, nil
+}
+
+func CleanTemp(path string) {
+	if err := os.RemoveAll(path); err != nil {
+		log.Fatalln("Failed to remove temp path", err)
+	}
 }

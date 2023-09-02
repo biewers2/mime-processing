@@ -9,7 +9,7 @@ func WithTempWorkspace[T interface{}](block func(srcFile string, destDir string)
 	if err != nil {
 		return result, err
 	}
-	defer os.RemoveAll(destDir)
+	defer CleanTemp(destDir)
 
 	srcFile, err := os.CreateTemp(destDir, "source-*")
 	if err != nil {

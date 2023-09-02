@@ -6,7 +6,7 @@ require go.temporal.io/sdk v1.24.0
 
 require (
 	github.com/aws/aws-sdk-go v1.44.328
-	github.com/repeale/fp-go v0.11.1
+	github.com/google/uuid v1.3.0
 )
 
 require (
@@ -17,7 +17,6 @@ require (
 	github.com/gogo/status v1.1.1 // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/pborman/uuid v1.2.1 // indirect

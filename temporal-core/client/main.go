@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	opt "github.com/repeale/fp-go/option"
 	"go.temporal.io/sdk/client"
 	"log"
 	core "mime-processing-api/temporal-core"
@@ -22,8 +21,8 @@ func main() {
 	}
 
 	input := workflows.ProcessInput{
-		S3Uri:       "s3://mime-processing-test/profile.jpg",
-		ContentType: opt.Some("image/jpeg"),
+		S3Uri:    "s3://mime-processing-test/ubuntu-no-small.mbox",
+		MimeType: "application/mbox",
 	}
 
 	we, err := c.ExecuteWorkflow(context.Background(), options, workflows.Process, input)
@@ -31,7 +30,7 @@ func main() {
 		log.Fatalln("Unable to execute workflow", err)
 	}
 
-	var result string
+	var result workflows.ProcessOutput
 	err = we.Get(context.Background(), &result)
 	if err != nil {
 		log.Fatalln("Unable get workflow result", err)

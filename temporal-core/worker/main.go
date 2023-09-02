@@ -6,6 +6,7 @@ import (
 	"log"
 	core "mime-processing-api/temporal-core"
 	"mime-processing-api/temporal-core/activities"
+	"mime-processing-api/temporal-core/workflow-process-mime"
 	"mime-processing-api/temporal-core/workflows"
 )
 
@@ -16,9 +17,14 @@ func main() {
 	}
 	defer c.Close()
 
-	w := worker.New(c, core.ProcessTaskQueue, worker.Options{})
+	opts := worker.Options{
+		EnableSessionWorker:               true,
+		MaxConcurrentSessionExecutionSize: 1000,
+	}
+
+	w := worker.New(c, core.ProcessTaskQueue, opts)
 	w.RegisterWorkflow(workflows.Process)
-	w.RegisterWorkflow(workflows.ProcessMime)
+	w.RegisterWorkflow(workflow_process_mime.ProcessMime)
 	w.RegisterWorkflow(workflows.Identify)
 	w.RegisterActivity(activities.Download)
 	w.RegisterActivity(activities.SelectTool)

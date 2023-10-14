@@ -1,6 +1,26 @@
 version: "3.5"
 services:
 
+  rusty-processing-worker:
+    image: rusty-processing-worker:latest
+    environment:
+      - TEMPORAL_HOST
+      - TEMPORAL_PORT
+      - TIKA_HOST
+      - TIKA_PORT
+    networks:
+      - temporal-network
+    depends_on:
+      - temporal
+      - apache-tika
+
+  apache-tika:
+    image: apache/tika:latest-full
+    networks:
+      - temporal-network
+    ports:
+      - "9998:9998"
+
   elasticsearch:
     container_name: temporal-elasticsearch
     environment:
@@ -51,7 +71,7 @@ services:
     networks:
       - temporal-network
     ports:
-      - 7233:7233
+      - "7233:7233"
     volumes:
       - ./dynamicconfig:/etc/temporal/config/dynamicconfig
 
@@ -79,7 +99,7 @@ services:
     networks:
       - temporal-network
     ports:
-      - 8080:8080
+      - "8080:8080"
 
 networks:
   temporal-network:

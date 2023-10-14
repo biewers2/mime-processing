@@ -6,7 +6,6 @@ import (
 	"log"
 	core "mime-processing-api/temporal-core"
 	"mime-processing-api/temporal-core/activities"
-	"mime-processing-api/temporal-core/workflow-process-mime"
 	"mime-processing-api/temporal-core/workflows"
 )
 
@@ -22,12 +21,13 @@ func main() {
 		MaxConcurrentSessionExecutionSize: 1000,
 	}
 
-	w := worker.New(c, core.ProcessTaskQueue, opts)
+	w := worker.New(c, core.TaskQueue, opts)
 	w.RegisterWorkflow(workflows.Process)
-	w.RegisterWorkflow(workflow_process_mime.ProcessMime)
-	w.RegisterWorkflow(workflows.Identify)
+	w.RegisterWorkflow(workflows.ProcessFile)
+	w.RegisterWorkflow(workflows.Collect)
+	w.RegisterActivity(activities.CreateWorkingDirectory)
 	w.RegisterActivity(activities.Download)
-	w.RegisterActivity(activities.SelectTool)
+	w.RegisterActivity(activities.Upload)
 	w.RegisterActivity(activities.Zip)
 
 	err = w.Run(worker.InterruptCh())

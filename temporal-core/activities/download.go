@@ -4,28 +4,36 @@ import (
 	"context"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"go.temporal.io/sdk/temporal"
 	core "mime-processing-api/temporal-core"
 	"os"
+	"path"
 )
 
 type DownloadInput struct {
 	S3Uri           string
-	DestinationFile string
+	DestinationPath string
 }
 
 type DownloadOutput struct {
+	Path  string
 	Bytes int64
 }
 
-// Temporal Activity to download a file from S3 into a destination.
-// Returns number of bytes downloaded.
+// Download downloads a file from S3 to a local file.
 func Download(_ context.Context, input DownloadInput) (DownloadOutput, error) {
 	bucket, key, err := core.ParseS3Uri(input.S3Uri)
+	if err != nil {
+		err = temporal.NewNonRetryableApplicationError("Failed to parse S3 URI", "ParseS3Uri", err)
+		return DownloadOutput{}, err
+	}
+
+	err = os.MkdirAll(path.Dir(input.DestinationPath), 0775)
 	if err != nil {
 		return DownloadOutput{}, err
 	}
 
-	file, err := os.OpenFile(input.DestinationFile, os.O_WRONLY, 0744)
+	file, err := os.Create(input.DestinationPath)
 	if err != nil {
 		return DownloadOutput{}, err
 	}
@@ -38,5 +46,5 @@ func Download(_ context.Context, input DownloadInput) (DownloadOutput, error) {
 		return DownloadOutput{}, err
 	}
 
-	return DownloadOutput{bytes}, nil
+	return DownloadOutput{input.DestinationPath, bytes}, nil
 }

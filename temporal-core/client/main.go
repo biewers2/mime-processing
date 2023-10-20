@@ -20,20 +20,23 @@ func main() {
 		TaskQueue: core.TaskQueue,
 	}
 	input := workflows.ProcessInput{
-		InputS3Uri:  "s3://mime-processing-test/test-archive.zip",
+		//InputS3Uri: "s3://mime-processing-test/test-archive.zip",
+		InputS3Uri:  "s3://mime-processing-test/small-documents.zip",
 		OutputS3Uri: "s3://mime-processing-test/test-archive-processed.zip",
-		MimeType:    "application/zip",
+		//OutputS3Uri: "s3://mime-processing-test/test",
+		MimeType: "application/zip",
+		//MimeType: "application/json",
+		Types: []string{"Text", "Metadata", "Pdf", "Embedded"},
+		//Types:   []string{"Metadata"},
+		Recurse: true,
 	}
 	collectWE, err := c.ExecuteWorkflow(context.Background(), options, workflows.Process, input)
 	if err != nil {
 		log.Fatalln("Unable to execute workflow", err)
 	}
 
-	output := workflows.ProcessOutput{}
-	err = collectWE.Get(context.Background(), &output)
+	err = collectWE.Get(context.Background(), nil)
 	if err != nil {
 		log.Fatalln("Unable get workflow result", err)
 	}
-
-	log.Println("Process result:", output)
 }

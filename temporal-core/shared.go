@@ -8,10 +8,12 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/redis/go-redis/v9"
 	"go.temporal.io/sdk/temporal"
-	"go.temporal.io/sdk/workflow"
 	"log"
+	"net"
 	"net/url"
+	"os"
 	"time"
 )
 
@@ -19,6 +21,14 @@ type Unit = struct{}
 
 const TaskQueue = "mime-processing"
 const RustyProcessTaskQueue = "rusty-mime-processing"
+const OutputSignalChannelName = "outputs"
+const TerminateSignalChannelName = "terminate"
+const MaxWorkflowHistoryLength = 10_000
+
+const RedisHostKey = "REDIS_HOST"
+const RedisPortKey = "REDIS_PORT"
+const RedisDefaultHost = "127.0.0.1"
+const RedisDefaultPort = "6379"
 
 var DefaultRetryPolicy = temporal.RetryPolicy{
 	InitialInterval:        time.Second,
@@ -28,10 +38,22 @@ var DefaultRetryPolicy = temporal.RetryPolicy{
 	NonRetryableErrorTypes: []string{"S3UriParseError"},
 }
 
-var DefaultActivityOptions = workflow.ActivityOptions{
-	StartToCloseTimeout: time.Minute,
-	RetryPolicy:         &DefaultRetryPolicy,
-}
+var RedisClient = func() *redis.Client {
+	var exists bool
+	var host, port string
+	if host, exists = os.LookupEnv(RedisHostKey); !exists {
+		host = RedisDefaultHost
+	}
+	if port, exists = os.LookupEnv(RedisPortKey); !exists {
+		port = RedisDefaultPort
+	}
+
+	return redis.NewClient(&redis.Options{
+		Addr:     net.JoinHostPort(host, port),
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+}()
 
 var sess = func() *session.Session {
 	sess, err := session.NewSession(&aws.Config{

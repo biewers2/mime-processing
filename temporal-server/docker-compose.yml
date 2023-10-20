@@ -21,6 +21,13 @@ services:
     ports:
       - "9998:9998"
 
+  redis:
+    image: redis:latest
+    networks:
+      - temporal-network
+    ports:
+      - "6379:6379"
+
   elasticsearch:
     container_name: temporal-elasticsearch
     environment:

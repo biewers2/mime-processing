@@ -5,7 +5,6 @@ import (
 	"go.temporal.io/sdk/worker"
 	"log"
 	core "mime-processing-api/temporal-core"
-	"mime-processing-api/temporal-core/activities"
 	"mime-processing-api/temporal-core/workflows"
 )
 
@@ -23,12 +22,9 @@ func main() {
 
 	w := worker.New(c, core.TaskQueue, opts)
 	w.RegisterWorkflow(workflows.Process)
-	w.RegisterWorkflow(workflows.ProcessFile)
-	w.RegisterWorkflow(workflows.Collect)
-	w.RegisterActivity(activities.CreateWorkingDirectory)
-	w.RegisterActivity(activities.Download)
-	w.RegisterActivity(activities.Upload)
-	w.RegisterActivity(activities.Zip)
+	w.RegisterWorkflow(workflows.ProcessEmbedded)
+	w.RegisterWorkflow(workflows.ForwardOutput)
+	w.RegisterActivity(workflows.QueryOutputStream)
 
 	err = w.Run(worker.InterruptCh())
 	if err != nil {

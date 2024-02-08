@@ -1,10 +1,11 @@
 package workflows
 
 import (
+	"core"
 	"context"
+	"errors"
 	"github.com/redis/go-redis/v9"
 	"go.temporal.io/sdk/activity"
-	core "mime-processing-api/temporal-core"
 )
 
 type QueryOutputStreamInput struct {
@@ -33,7 +34,7 @@ func QueryOutputStream(ctx context.Context, input QueryOutputStreamInput) (Query
 			Count:   0,
 		}
 		res, err := core.RedisClient.XRead(context.Background(), &args).Result()
-		if err == redis.Nil {
+		if errors.Is(err, redis.Nil) {
 			// Record heartbeat in order for activity to be cancellable
 			activity.RecordHeartbeat(ctx, nil)
 			continue

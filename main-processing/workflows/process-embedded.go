@@ -1,8 +1,8 @@
 package workflows
 
 import (
+	"core"
 	"go.temporal.io/sdk/workflow"
-	core "mime-processing-api/temporal-core"
 	"path"
 	"time"
 )
@@ -33,7 +33,7 @@ type ProcessEmbeddedInput struct {
 // This workflow is responsible for receiving outputs from the output stream defined by the `StreamName` field in the
 // `ProcessEmbeddedInput` struct. It then starts a `ProcessRustyFile` workflow for each entry in the output stream.
 func ProcessEmbedded(ctx workflow.Context, input ProcessEmbeddedInput) error {
-	logger := workflow.GetLogger(ctx)
+	//logger := workflow.GetLogger(ctx)
 	ctx = workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
 		TaskQueue: input.Workspace.StickyTaskQueue,
 	})

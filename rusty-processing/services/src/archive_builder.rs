@@ -1,6 +1,6 @@
 use std::io::{Read, Write};
 use std::path::Path;
-use std::{io, path};
+use std::io;
 
 use bytesize::MB;
 

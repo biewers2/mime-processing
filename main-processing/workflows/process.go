@@ -1,9 +1,9 @@
 package workflows
 
 import (
+	"core"
 	"fmt"
 	"go.temporal.io/sdk/workflow"
-	core "mime-processing-api/temporal-core"
 	"time"
 )
 

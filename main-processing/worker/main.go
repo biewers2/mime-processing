@@ -1,11 +1,11 @@
 package main
 
 import (
+	"core"
+	"core/workflows"
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/worker"
 	"log"
-	core "mime-processing-api/temporal-core"
-	"mime-processing-api/temporal-core/workflows"
 )
 
 func main() {

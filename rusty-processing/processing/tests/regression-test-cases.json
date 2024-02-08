@@ -1,0 +1,20 @@
+[
+  {
+    "mimetype": "application/mbox",
+    "files": [
+      "../resources/mbox/ubuntu-no-small.mbox"
+    ]
+  },
+  {
+    "mimetype": "message/rfc822",
+    "files": [
+      "../resources/rfc822/headers-small.eml"
+    ]
+  },
+  {
+    "mimetype": "application/zip",
+    "files": [
+      "../resources/zip/testzip.zip"
+    ]
+  }
+]
